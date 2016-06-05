@@ -1,0 +1,30 @@
+# {{ ansible_managed }}
+
+ForwardAgent yes
+
+Host *
+    UserKnownHostsFile /dev/null
+    StrictHostKeyChecking no
+    ServerAliveInterval 60
+
+Host github.com
+    IdentityFile ~/.ssh/github_id_rsa
+
+{% for host_group in developer_ssh_config_hosts %}
+# {{ host_group.name }} {{ '{{{' }}
+{% for host_data in host_group.hosts %}
+
+{% for hostname, attrs in host_data.items() %}
+Host {{ hostname }}
+{% for attr in attrs %}
+{% for attr_name in attr %}
+    {{ attr_name }} {{ attr[attr_name] }}
+{% endfor %}
+{% endfor %}
+{% endfor %}
+{% endfor %}
+
+# {{ '}}}' }}
+
+{% endfor %}
+# vim: set foldmethod=marker:

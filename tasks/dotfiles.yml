@@ -1,0 +1,56 @@
+---
+
+# Copyright 2016 David Stanek <dstanek@dstanek.com>
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+
+- name: clone my dotfiles
+  become: yes
+  become_user: "{{ developer_username }}"
+  git:
+    repo: https://github.com/dstanek/dstanek.git
+    dest: "{{ developer_home_directory }}/{{ developer_username }}/Projects/dotfiles"
+    accept_hostkey: yes
+    update: yes
+
+- name: create dotfile symlinks
+  file:
+    dest: "{{ developer_home_directory }}/{{ developer_username }}/{{ item }}"
+    src: "{{ developer_home_directory }}/{{ developer_username }}/Projects/dotfiles/{{ item }}"
+    state: link
+    owner: "{{ developer_username }}"
+    group: "{{ developer_groupname }}"
+    force: yes
+  with_items:
+    # shell
+    - .zshrc
+    - .zshenv
+    #- .zsh.custom
+    - .shell
+    # misc
+    - .ansible.cfg
+    - .ctags
+    #- .mutt
+    #- .muttrc
+    - .tmux.conf
+    - .weechat
+    # scripts
+    - bin
+    # vcs
+    - .gitconfig
+    - .git_template
+    - .gitignore_global
+    #- .hgignore
+    #- .hgrc
+    # vim
+    - .vim
